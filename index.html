@@ -13,39 +13,31 @@
     --ink:#24333d; --muted:#7d909c;
     --card:#ffffff; --card2:#ffffff;
     --accent:#23b8e8; --accent-deep:#1689c4;
-    --glow:#19c8f0;
-    --user-bubble:#1f9fd4;
-    --bot-bubble:#ffffff;
+    --user-bubble:#1f9fd4; --bot-bubble:#ffffff;
     --line:#dcebf3;
     --shadow:0 10px 34px rgba(40,130,180,.14);
     --panel:#ffffff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{
-    font-family:'Nunito',sans-serif;
-    background:radial-gradient(1100px 700px at 80% -15%,var(--bg2),var(--bg));
-    color:var(--ink);
-    display:flex;flex-direction:column;height:100vh;overflow:hidden;
-    transition:background .4s,color .4s;
-  }
+  body{font-family:'Nunito',sans-serif;background:radial-gradient(1100px 700px at 80% -15%,var(--bg2),var(--bg));color:var(--ink);display:flex;flex-direction:column;height:100vh;overflow:hidden}
   body.rtl{font-family:'Tajawal',sans-serif;direction:rtl}
 
-  header{display:flex;align-items:center;padding:13px 22px;background:var(--card);border-bottom:1px solid var(--line);z-index:5}
-  .brand-zone{display:flex;align-items:center;gap:13px;flex:1;min-width:0}
-  .lang-zone{flex:0 0 auto}
-  .gear-zone{flex:1;display:flex;justify-content:flex-end}
-  .mascot-sm{width:50px;height:50px;flex:none;object-fit:cover;border-radius:12px;background:#eef6fb}
-  .brand h1{font-family:'Baloo 2',cursive;font-size:1.5rem;color:var(--accent-deep);line-height:1}
+  header{display:flex;align-items:center;padding:13px 18px;background:var(--card);border-bottom:1px solid var(--line);z-index:5;gap:10px}
+  .icon-btn{width:42px;height:42px;border:0;border-radius:13px;cursor:pointer;background:var(--bg2);color:var(--accent-deep);display:grid;place-items:center;transition:.2s;flex:none}
+  .icon-btn:hover{background:var(--accent);color:#fff}
+  .icon-btn svg{width:22px;height:22px}
+  .icon-btn.hidden{display:none}
+  body.rtl #backBtn svg{transform:scaleX(-1)}
+  .brand-zone{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+  .mascot-sm{width:46px;height:46px;flex:none;object-fit:cover;border-radius:12px;background:#eef6fb}
+  .brand h1{font-family:'Baloo 2',cursive;font-size:1.45rem;color:var(--accent-deep);line-height:1}
   body.rtl .brand h1{font-family:'Tajawal',sans-serif;font-weight:700}
-  .brand p{font-size:.78rem;color:var(--muted);margin-top:2px}
-  
+  .brand p{font-size:.76rem;color:var(--muted);margin-top:2px}
+  .lang-zone{flex:0 0 auto}
   .lang-switch{display:flex;gap:3px;background:var(--bg2);padding:3px;border-radius:12px;direction:ltr}
   .lang-switch button{border:0;background:transparent;font:inherit;font-weight:800;font-size:.78rem;padding:5px 10px;border-radius:9px;cursor:pointer;color:var(--muted);transition:.2s}
   .lang-switch button.active{background:var(--card2);color:var(--accent-deep);box-shadow:0 1px 5px rgba(40,130,180,.2)}
-  .gear{width:42px;height:42px;border:0;border-radius:13px;cursor:pointer;background:var(--bg2);color:var(--accent-deep);display:grid;place-items:center;transition:.25s}
-  .gear:hover{background:var(--accent);color:#fff;transform:rotate(40deg)}
-  .gear svg{width:21px;height:21px}
 
   .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
   body.pre-chat .main{overflow:hidden}
@@ -90,64 +82,97 @@
   .footnote{text-align:center;font-size:.72rem;color:var(--muted);margin-top:10px}
   .footnote .by{color:var(--accent-deep);font-weight:800}
 
+  /* ===== Drawer (hamburger menu) + Settings share overlay ===== */
   .overlay{position:fixed;inset:0;background:rgba(15,40,55,.45);opacity:0;pointer-events:none;transition:.3s;z-index:20}
   .overlay.open{opacity:1;pointer-events:auto}
-  .panel{position:fixed;top:0;inset-inline-end:0;height:100%;width:360px;max-width:88vw;background:var(--panel);box-shadow:-12px 0 40px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:21;display:flex;flex-direction:column}
-  body.rtl .panel{transform:translateX(-100%)}
+
+  /* slide-in surface, left in LTR / right in RTL */
+  .drawer{position:fixed;top:0;left:0;right:auto;height:100%;width:320px;max-width:86vw;background:var(--panel);box-shadow:12px 0 40px rgba(0,0,0,.16);transform:translateX(-105%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:21;display:flex;flex-direction:column}
+  body.rtl .drawer{left:auto;right:0;box-shadow:-12px 0 40px rgba(0,0,0,.16);transform:translateX(105%)}
+  .drawer.open{transform:translateX(0)}
+  body.rtl .drawer.open{transform:translateX(0)}
+  .drawer-head{display:flex;align-items:center;gap:10px;padding:18px 18px;border-bottom:1px solid var(--line)}
+  .drawer-head h3{font-family:'Baloo 2',cursive;font-size:1.25rem;color:var(--accent-deep);flex:1}
+  body.rtl .drawer-head h3{font-family:'Tajawal',sans-serif;font-weight:700}
+  .drawer-head .close{width:34px;height:34px;border:0;border-radius:10px;background:var(--bg2);color:var(--ink);font-size:1.25rem;cursor:pointer}
+  .drawer-head .close:hover{background:var(--accent);color:#fff}
+
+  .newchat-btn{margin:14px;padding:12px 16px;border:0;border-radius:14px;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;font:inherit;font-weight:800;font-size:.95rem;display:flex;align-items:center;gap:9px;justify-content:center;transition:.2s}
+  .newchat-btn:hover{filter:brightness(1.06)}
+  .newchat-btn svg{width:18px;height:18px}
+
+  .hist-label{padding:4px 20px;font-size:.74rem;font-weight:800;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+  .hist-list{flex:1;overflow-y:auto;padding:4px 12px 12px}
+  .hist-empty{padding:16px 20px;color:var(--muted);font-size:.85rem;line-height:1.5}
+  .hist-item{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:12px;cursor:pointer;transition:.15s}
+  .hist-item:hover{background:var(--bg2)}
+  .hist-item.active{background:var(--bg2)}
+  .hist-item .t{flex:1;font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hist-item .del{width:28px;height:28px;flex:none;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;opacity:0;transition:.15s}
+  .hist-item:hover .del{opacity:1}
+  .hist-item .del:hover{background:#ffe2e2;color:#d33}
+  .hist-item .del svg{width:15px;height:15px}
+
+  .drawer-foot{border-top:1px solid var(--line)}
+  .menu-row{display:flex;align-items:center;gap:11px;padding:14px 20px;cursor:pointer;font-weight:700;font-size:.95rem;transition:.15s}
+  .menu-row:hover{background:var(--bg2)}
+  .menu-row svg{width:19px;height:19px;color:var(--accent-deep)}
+  .drawer-credit{padding:12px 20px 16px;text-align:center;font-size:.76rem;color:var(--muted)}
+  .drawer-credit b{color:var(--accent-deep)}
+
+  /* ===== Settings panel (separate slide, opposite side) ===== */
+  .panel{position:fixed;top:0;left:0;right:auto;height:100%;width:360px;max-width:88vw;background:var(--panel);box-shadow:12px 0 40px rgba(0,0,0,.16);transform:translateX(-105%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:22;display:flex;flex-direction:column}
+  body.rtl .panel{left:auto;right:0;box-shadow:-12px 0 40px rgba(0,0,0,.16);transform:translateX(105%)}
   .panel.open{transform:translateX(0)}
+  body.rtl .panel.open{transform:translateX(0)}
   .panel-head{display:flex;align-items:center;gap:10px;padding:20px 22px;border-bottom:1px solid var(--line)}
   .panel-head h3{font-family:'Baloo 2',cursive;font-size:1.3rem;color:var(--accent-deep)}
   body.rtl .panel-head h3{font-family:'Tajawal',sans-serif;font-weight:700}
-  .panel-head .close{margin-inline-start:auto;width:36px;height:36px;border:0;border-radius:10px;background:var(--bg2);color:var(--ink);font-size:1.3rem;cursor:pointer;transition:.2s}
+  .panel-head .close{margin-inline-start:auto;width:36px;height:36px;border:0;border-radius:10px;background:var(--bg2);color:var(--ink);font-size:1.3rem;cursor:pointer}
   .panel-head .close:hover{background:var(--accent);color:#fff}
   .panel-body{padding:22px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:24px}
   .field label{display:block;font-weight:800;font-size:.95rem;margin-bottom:6px}
   .field .hint{font-size:.78rem;color:var(--muted);margin-bottom:10px;line-height:1.4}
-  .field input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:.95rem;background:var(--card2);color:var(--ink);transition:.2s}
+  .field input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:.95rem;background:var(--card2);color:var(--ink)}
   .field input[type=text]:focus{outline:none;border-color:var(--accent)}
   .seg{display:flex;gap:8px}
   .seg button{flex:1;border:1.5px solid var(--line);background:var(--card2);color:var(--muted);font:inherit;font-weight:700;font-size:.85rem;padding:11px 6px;border-radius:13px;cursor:pointer;transition:.2s}
   .seg button.active{border-color:var(--accent);background:var(--accent);color:#fff}
   .save-note{font-size:.78rem;color:var(--accent-deep);font-weight:700;text-align:center;opacity:0;transition:.3s}
   .save-note.show{opacity:1}
-  .panel-credit{margin-top:auto;padding-top:18px;border-top:1px solid var(--line);text-align:center;font-size:.8rem;color:var(--muted)}
-  .panel-credit b{color:var(--accent-deep)}
 
-  /* ============ MOBILE ============ */
-  @media (max-width: 600px){
+  @media (max-width:600px){
     header{padding:10px 12px;gap:8px}
-    .mascot-sm{width:40px;height:40px;border-radius:10px}
-    .brand h1{font-size:1.2rem}
-    .brand p{display:none}                 /* hide tagline to save space */
+    .mascot-sm{width:38px;height:38px;border-radius:10px}
+    .brand h1{font-size:1.15rem}
+    .brand p{display:none}
     .lang-switch button{padding:6px 9px;font-size:.8rem}
-    .gear{width:40px;height:40px}
-
+    .icon-btn{width:40px;height:40px}
     .chat-inner{padding:16px 12px;gap:14px}
     .big-mascot{width:clamp(110px,34vw,150px);height:clamp(110px,34vw,150px)}
-    .hero h2{font-size:1.4rem}
-    .hero p{font-size:.9rem;padding:0 6px}
-
+    .hero h2{font-size:1.4rem}.hero p{font-size:.9rem;padding:0 6px}
     .bubble{max-width:88%;font-size:.97rem;padding:11px 14px}
     .msg .avatar{width:32px;height:32px}
-
     .composer{padding:8px 10px 12px}
     .composer-inner{padding:7px 7px 7px 16px;border-radius:22px}
     body.rtl .composer-inner{padding:7px 16px 7px 7px}
-    textarea{font-size:16px}              /* 16px stops iOS zoom-on-focus */
+    textarea{font-size:16px}
     .send{width:44px;height:44px}
-
-    .chips{gap:7px;margin-top:10px}
-    .chip{padding:8px 12px;font-size:.82rem}
+    .chips{gap:7px;margin-top:10px}.chip{padding:8px 12px;font-size:.82rem}
     .footnote{font-size:.68rem;margin-top:8px}
-
-    .panel{width:100%;max-width:100%}      /* full-width settings on phone */
-    .panel-body{padding:18px;gap:20px}
+    .panel{width:100%;max-width:100%}.panel-body{padding:18px;gap:20px}
   }
 </style>
 </head>
 <body>
 
 <header>
+  <button class="icon-btn" id="menuBtn" aria-label="Menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <button class="icon-btn hidden" id="backBtn" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
   <div class="brand-zone">
     <img class="mascot-sm" id="headMascot" src="labib-avatar.png" alt="Labib">
     <div class="brand">
@@ -161,11 +186,6 @@
       <button data-lang="ar">ع</button>
       <button data-lang="fr">FR</button>
     </div>
-  </div>
-  <div class="gear-zone">
-    <button class="gear" id="gearBtn" aria-label="Settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
-    </button>
   </div>
 </header>
 
@@ -193,6 +213,29 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
+
+<!-- Hamburger drawer -->
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3 id="menuTitle">Menu</h3>
+    <button class="close" id="drawerClose">×</button>
+  </div>
+  <button class="newchat-btn" id="newChatBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    <span id="newChatTxt">New chat</span>
+  </button>
+  <div class="hist-label" id="histLabel">History</div>
+  <div class="hist-list" id="histList"></div>
+  <div class="drawer-foot">
+    <div class="menu-row" id="openSettingsRow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
+      <span id="menuSettingsTxt">Settings</span>
+    </div>
+    <div class="drawer-credit">Made with care by <b>Ziad Makhloufi</b></div>
+  </div>
+</aside>
+
+<!-- Settings panel -->
 <aside class="panel" id="panel">
   <div class="panel-head">
     <h3 id="setTitle">Settings</h3>
@@ -214,20 +257,17 @@
       </div>
     </div>
     <p class="save-note" id="saveNote">Saved ✓</p>
-    <div class="panel-credit">Made with care by <b>Ziad Makhloufi</b></div>
   </div>
 </aside>
 
 <script>
-
 /* =====================================================================
-   LABIB CONFIG  —  put your free Gemini key below.
+   LABIB CONFIG — put your free Gemini key below.
    Get one (no credit card) at: https://aistudio.google.com/apikey
-   ⚠ IMPORTANT: this key is visible in the page source. That is OK for a
-   homework demo. DELETE / regenerate the key right after your class so
-   nobody can reuse it later.
+   ⚠ This key is visible in page source. Fine for a homework demo.
+   DELETE / regenerate the key right after your class.
    ===================================================================== */
-const API_KEY = "AQ.Ab8RN6IvYU3XVPcxpTzoRwMay2F0NHYodECI7xRFQQ6P_UN1hg";
+const API_KEY = "PUT_YOUR_KEY_HERE";
 const MODEL   = "gemini-2.5-flash-lite";
 const SYSTEM_PROMPT = `You are "Labib" (لبيب), a friendly, patient study assistant for students from primary school to secondary school.
 
@@ -251,46 +291,151 @@ const T = {
       text:"I help students of all grades search, understand, and revise. Ask me anything — in English, العربية, or Français!",
       ph:"Ask Labib anything...",foot:'Labib can make mistakes — always double-check important facts. · Made by <span class="by">Ziad Makhloufi</span>',
       chips:[["🔎","Help me research a topic"],["📖","Explain this simply"],["📝","Quiz me on a subject"],["✨","Summarize my notes"]],
+      menu:"Menu",newchat:"New chat",histl:"History",histEmpty:"No saved chats yet. Start talking to Labib and your chats appear here.",
       settings:"Settings",grade:"My grade / level",hintGrade:'Optional. Tell Labib your level so answers fit you. E.g. "Grade 9" or "Primary 4".',
       gradePh:"e.g. Grade 9",style:"Answer style",hintStyle:"How detailed should Labib's answers be?",
-      simple:"Simple",balanced:"Balanced",detailed:"Detailed",saved:"Saved ✓"},
+      simple:"Simple",balanced:"Balanced",detailed:"Detailed",saved:"Saved ✓",newTitle:"New chat"},
   ar:{tag:"رفيقك اللطيف في الدراسة",title:"مرحباً! أنا لبيب 👋",
       text:"أساعد الطلاب في جميع المراحل على البحث والفهم والمراجعة. اسألني أي شيء — بالعربية أو الإنجليزية أو الفرنسية!",
       ph:"اسأل لبيب أي شيء...",foot:'قد يخطئ لبيب — تحقّق دائماً من المعلومات المهمة. · من إنشاء <span class="by">زياد المخلوفي</span>',
       chips:[["🔎","ساعدني في البحث عن موضوع"],["📖","اشرح لي ببساطة"],["📝","اختبرني في مادة"],["✨","لخّص لي ملاحظاتي"]],
-      settings:"الإعدادات",grade:"صفّي / مستواي",hintGrade:'اختياري. أخبر لبيب بمستواك لتناسبك الإجابات. مثل: "الصف التاسع" أو "الابتدائي الرابع".',
+      menu:"القائمة",newchat:"محادثة جديدة",histl:"السجل",histEmpty:"لا توجد محادثات محفوظة بعد. ابدأ بالتحدث مع لبيب وستظهر هنا.",
+      settings:"الإعدادات",grade:"صفّي / مستواي",hintGrade:'اختياري. أخبر لبيب بمستواك لتناسبك الإجابات. مثل: "الصف التاسع".',
       gradePh:"مثل: الصف التاسع",style:"نمط الإجابة",hintStyle:"ما مدى تفصيل إجابات لبيب؟",
-      simple:"بسيط",balanced:"متوازن",detailed:"مفصّل",saved:"تم الحفظ ✓"},
+      simple:"بسيط",balanced:"متوازن",detailed:"مفصّل",saved:"تم الحفظ ✓",newTitle:"محادثة جديدة"},
   fr:{tag:"Ton copain d'étude sympa",title:"Salut ! Je suis Labib 👋",
       text:"J'aide les élèves de tous niveaux à rechercher, comprendre et réviser. Demande-moi ce que tu veux — en français, en anglais ou en العربية !",
       ph:"Demande à Labib...",foot:'Labib peut se tromper — vérifie toujours les infos importantes. · Créé par <span class="by">Ziad Makhloufi</span>',
       chips:[["🔎","Aide-moi à rechercher un sujet"],["📖","Explique-moi simplement"],["📝","Fais-moi un quiz"],["✨","Résume mes notes"]],
-      settings:"Réglages",grade:"Ma classe / niveau",hintGrade:'Optionnel. Indique ton niveau pour des réponses adaptées. Ex. "3e" ou "CM1".',
+      menu:"Menu",newchat:"Nouveau chat",histl:"Historique",histEmpty:"Aucune conversation enregistrée. Parle à Labib et tes chats apparaîtront ici.",
+      settings:"Réglages",grade:"Ma classe / niveau",hintGrade:'Optionnel. Indique ton niveau pour des réponses adaptées. Ex. "3e".',
       gradePh:"ex. 3e",style:"Style de réponse",hintStyle:"Niveau de détail des réponses de Labib ?",
-      simple:"Simple",balanced:"Équilibré",detailed:"Détaillé",saved:"Enregistré ✓"}
+      simple:"Simple",balanced:"Équilibré",detailed:"Détaillé",saved:"Enregistré ✓",newTitle:"Nouveau chat"}
 };
 
-let lang='en', history=[];
+let lang='en';
+let history=[];            // current conversation [{role,parts:[{text}]}]
+let currentId=null;        // id of the chat being viewed/saved
 const $ = id=>document.getElementById(id);
+
 const prefs = {
   grade: localStorage.getItem('labib_grade') || '',
   style: localStorage.getItem('labib_style') || 'balanced',
   lang:  localStorage.getItem('labib_lang') || 'en'
 };
 
+/* ---------- History storage (per-device, localStorage) ---------- */
+function loadChats(){ try{ return JSON.parse(localStorage.getItem('labib_chats')||'[]'); }catch(e){ return []; } }
+function saveChats(arr){ localStorage.setItem('labib_chats', JSON.stringify(arr)); }
+function titleFrom(hist){
+  const firstUser = hist.find(m=>m.role==='user');
+  let t = firstUser ? firstUser.parts[0].text.trim() : T[lang].newTitle;
+  return t.length>42 ? t.slice(0,42)+'…' : t;
+}
+function persistCurrent(){
+  if(!history.length) return;            // nothing to save
+  const chats = loadChats();
+  const idx = chats.findIndex(c=>c.id===currentId);
+  const rec = { id: currentId, title: titleFrom(history), messages: history, ts: Date.now() };
+  if(idx>=0) chats[idx]=rec; else chats.unshift(rec);
+  saveChats(chats);
+  renderHistory();
+}
+function renderHistory(){
+  const list=$('histList'); const chats=loadChats(); list.innerHTML='';
+  if(!chats.length){ list.innerHTML=`<div class="hist-empty">${T[lang].histEmpty}</div>`; return; }
+  chats.sort((a,b)=>b.ts-a.ts).forEach(c=>{
+    const row=document.createElement('div'); row.className='hist-item'+(c.id===currentId?' active':'');
+    row.innerHTML=`<span class="t"></span><button class="del" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg></button>`;
+    row.querySelector('.t').textContent=c.title;
+    row.querySelector('.t').onclick=()=>openChat(c.id);
+    row.onclick=(e)=>{ if(!e.target.closest('.del')) openChat(c.id); };
+    row.querySelector('.del').onclick=(e)=>{ e.stopPropagation(); deleteChat(c.id); };
+    list.appendChild(row);
+  });
+}
+function deleteChat(id){
+  let chats=loadChats().filter(c=>c.id!==id); saveChats(chats);
+  if(id===currentId){ history=[]; currentId=null; resetToWelcome(); }
+  renderHistory();
+}
+
+/* ---------- View helpers ---------- */
+function resetToWelcome(){
+  document.body.classList.add('pre-chat');
+  $('backBtn').classList.add('hidden');
+  $('chatInner').innerHTML=`<div class="hero" id="hero">
+      <img class="big-mascot" id="bigMascot" src="labib-main.png" alt="Labib">
+      <h2 id="wTitle">${T[lang].title}</h2>
+      <p id="wText">${T[lang].text}</p></div>`;
+  $('chips').classList.remove('hidden');
+  $('main').style.justifyContent='';
+}
+function startChatLayout(){
+  document.body.classList.remove('pre-chat');
+  const hero=$('hero'); if(hero) hero.remove();
+  $('chips').classList.add('hidden');
+  $('main').style.justifyContent='flex-start';
+  $('backBtn').classList.remove('hidden');
+}
+function renderConversation(){
+  $('chatInner').innerHTML='';
+  history.forEach(m=>{
+    const role = m.role==='user'?'user':'bot';
+    const msg=document.createElement('div'); msg.className='msg '+role;
+    msg.innerHTML = role==='user' ? `<div class="bubble"></div>` : `<img class="avatar" src="${avatarData}" alt="Labib"><div class="bubble"></div>`;
+    msg.querySelector('.bubble').textContent=m.parts[0].text;
+    $('chatInner').appendChild(msg);
+  });
+  $('main').scrollTop=$('main').scrollHeight;
+}
+
+/* ---------- Top-level actions ---------- */
+function newChat(){
+  persistCurrent();                 // save whatever we had
+  history=[]; currentId='c'+Date.now()+Math.random().toString(36).slice(2,6);
+  resetToWelcome(); closeAll();
+}
+function openChat(id){
+  persistCurrent();                 // save current before switching
+  const c=loadChats().find(x=>x.id===id); if(!c) return;
+  currentId=c.id; history=c.messages.slice();
+  startChatLayout(); renderConversation(); renderHistory(); closeAll();
+}
+function goBack(){
+  persistCurrent();                 // save before leaving
+  history=[]; currentId=null;
+  resetToWelcome();
+}
+
+/* ---------- Drawer + settings open/close ---------- */
+function openDrawer(){ renderHistory(); $('overlay').classList.add('open'); $('drawer').classList.add('open'); }
+function openSettings(){ $('overlay').classList.add('open'); $('panel').classList.add('open'); }
+function closeAll(){ $('overlay').classList.remove('open'); $('drawer').classList.remove('open'); $('panel').classList.remove('open'); }
+$('menuBtn').onclick=openDrawer;
+$('drawerClose').onclick=closeAll;
+$('overlay').onclick=closeAll;
+$('backBtn').onclick=goBack;
+$('newChatBtn').onclick=newChat;
+$('openSettingsRow').onclick=()=>{ $('drawer').classList.remove('open'); openSettings(); };
+$('closeBtn').onclick=closeAll;
+
+/* ---------- Language ---------- */
 function applyLang(l){
   lang=l; const t=T[l];
   document.body.classList.toggle('rtl', l==='ar');
   document.documentElement.lang=l;
-  $('brandTag').textContent=t.tag; $('wTitle').textContent=t.title; $('wText').textContent=t.text;
-  $('input').placeholder=t.ph; $('foot').innerHTML=t.foot;
+  $('brandTag').textContent=t.tag; $('input').placeholder=t.ph; $('foot').innerHTML=t.foot;
+  $('menuTitle').textContent=t.menu; $('newChatTxt').textContent=t.newchat; $('histLabel').textContent=t.histl;
+  $('menuSettingsTxt').textContent=t.settings;
   $('setTitle').textContent=t.settings; $('lblGrade').textContent=t.grade; $('hintGrade').textContent=t.hintGrade;
   $('gradeInput').placeholder=t.gradePh; $('lblStyle').textContent=t.style; $('hintStyle').textContent=t.hintStyle;
   $('stSimple').textContent=t.simple; $('stBalanced').textContent=t.balanced; $('stDetailed').textContent=t.detailed;
   $('saveNote').textContent=t.saved;
   document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
   localStorage.setItem('labib_lang',l);
-  renderChips();
+  if(document.body.classList.contains('pre-chat')){ const w=$('wTitle'),x=$('wText'); if(w)w.textContent=t.title; if(x)x.textContent=t.text; }
+  renderChips(); renderHistory();
 }
 function renderChips(){
   const box=$('chips'); box.innerHTML='';
@@ -303,16 +448,14 @@ function renderChips(){
 }
 document.querySelectorAll('.lang-switch button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
 
-function openPanel(){ $('overlay').classList.add('open'); $('panel').classList.add('open'); }
-function closePanel(){ $('overlay').classList.remove('open'); $('panel').classList.remove('open'); }
-$('gearBtn').onclick=openPanel; $('closeBtn').onclick=closePanel; $('overlay').onclick=closePanel;
+/* ---------- Settings fields ---------- */
 function flashSaved(){ const n=$('saveNote'); n.classList.add('show'); clearTimeout(n._t); n._t=setTimeout(()=>n.classList.remove('show'),1200); }
 $('gradeInput').value = prefs.grade;
 $('gradeInput').addEventListener('input', e=>{ prefs.grade=e.target.value; localStorage.setItem('labib_grade',prefs.grade); flashSaved(); });
 function setStyle(s){ prefs.style=s; localStorage.setItem('labib_style',s); document.querySelectorAll('#styleSeg button').forEach(b=>b.classList.toggle('active',b.dataset.style===s)); flashSaved(); }
 document.querySelectorAll('#styleSeg button').forEach(b=>b.onclick=()=>setStyle(b.dataset.style));
 
-function startChatLayout(){ document.body.classList.remove('pre-chat'); const hero=$('hero'); if(hero) hero.remove(); $('chips').classList.add('hidden'); $('main').style.justifyContent='flex-start'; }
+/* ---------- Chat bubbles ---------- */
 function addBubble(role,text){
   startChatLayout();
   const msg=document.createElement('div'); msg.className='msg '+(role==='user'?'user':'bot');
@@ -329,12 +472,13 @@ function removeTyping(){ const t=$('typingMsg'); if(t)t.remove(); }
 
 async function sendMessage(){
   const input=$('input'); const text=input.value.trim(); if(!text)return;
+  if(!currentId) currentId='c'+Date.now()+Math.random().toString(36).slice(2,6);
   input.value=''; input.style.height='auto'; $('send').disabled=true;
   addBubble('user',text);
   history.push({role:'user',parts:[{text}]});
+  persistCurrent();                  // auto-save after each user message
   addTyping();
   try{
-    // Build Labib's instructions + optional grade/style preferences
     let sys = SYSTEM_PROMPT;
     if(prefs.grade && prefs.grade.trim()){
       sys += "\n\nSTUDENT LEVEL: The student describes their level as: \"" + prefs.grade.trim().slice(0,120) +
@@ -347,12 +491,7 @@ async function sendMessage(){
     const res = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":generateContent?key=" + API_KEY,
       { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          system_instruction:{ parts:[{ text: sys }] },
-          contents: history,
-          generationConfig:{ temperature:0.7, maxOutputTokens:1024 }
-        })
-      });
+        body: JSON.stringify({ system_instruction:{ parts:[{ text: sys }] }, contents: history, generationConfig:{ temperature:0.7, maxOutputTokens:1024 } }) });
     const data = await res.json();
     removeTyping();
     if(!res.ok){
@@ -362,7 +501,7 @@ async function sendMessage(){
     } else {
       const reply = (((data.candidates||[])[0]||{}).content||{}).parts ? data.candidates[0].content.parts[0].text : '';
       if(!reply){ addBubble('bot','⚠️ Labib could not produce an answer. Try rephrasing.'); }
-      else { addBubble('bot',reply); history.push({role:'model',parts:[{text:reply}]}); }
+      else { addBubble('bot',reply); history.push({role:'model',parts:[{text:reply}]}); persistCurrent(); }
     }
   }catch(e){ removeTyping(); addBubble('bot','⚠️ Connection problem. Please try again.'); }
   finally{ $('send').disabled=false; input.focus(); }
@@ -373,8 +512,9 @@ input.addEventListener('input',()=>{ input.style.height='auto'; input.style.heig
 input.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); } });
 $('send').onclick=sendMessage;
 
+/* ---------- Init ---------- */
 document.body.classList.add('pre-chat');
-setStyle(prefs.style); applyLang(prefs.lang);
+setStyle(prefs.style); applyLang(prefs.lang); renderHistory();
 </script>
 </body>
 </html>
