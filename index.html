@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labib · لبيب — Your Study Buddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Tajawal:wght@400;500;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f9fc; --bg2:#e6f3fa;
+    --ink:#24333d; --muted:#7d909c;
+    --card:#ffffff; --card2:#ffffff;
+    --accent:#23b8e8; --accent-deep:#1689c4;
+    --glow:#19c8f0;
+    --user-bubble:#1f9fd4;
+    --bot-bubble:#ffffff;
+    --line:#dcebf3;
+    --shadow:0 10px 34px rgba(40,130,180,.14);
+    --panel:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:radial-gradient(1100px 700px at 80% -15%,var(--bg2),var(--bg));
+    color:var(--ink);
+    display:flex;flex-direction:column;height:100vh;overflow:hidden;
+    transition:background .4s,color .4s;
+  }
+  body.rtl{font-family:'Tajawal',sans-serif;direction:rtl}
+
+  header{display:flex;align-items:center;padding:13px 22px;background:var(--card);border-bottom:1px solid var(--line);z-index:5}
+  .brand-zone{display:flex;align-items:center;gap:13px;flex:1;min-width:0}
+  .lang-zone{flex:0 0 auto}
+  .gear-zone{flex:1;display:flex;justify-content:flex-end}
+  .mascot-sm{width:50px;height:50px;flex:none;object-fit:cover;border-radius:12px;background:#eef6fb}
+  .brand h1{font-family:'Baloo 2',cursive;font-size:1.5rem;color:var(--accent-deep);line-height:1}
+  body.rtl .brand h1{font-family:'Tajawal',sans-serif;font-weight:700}
+  .brand p{font-size:.78rem;color:var(--muted);margin-top:2px}
+  
+  .lang-switch{display:flex;gap:3px;background:var(--bg2);padding:3px;border-radius:12px;direction:ltr}
+  .lang-switch button{border:0;background:transparent;font:inherit;font-weight:800;font-size:.78rem;padding:5px 10px;border-radius:9px;cursor:pointer;color:var(--muted);transition:.2s}
+  .lang-switch button.active{background:var(--card2);color:var(--accent-deep);box-shadow:0 1px 5px rgba(40,130,180,.2)}
+  .gear{width:42px;height:42px;border:0;border-radius:13px;cursor:pointer;background:var(--bg2);color:var(--accent-deep);display:grid;place-items:center;transition:.25s}
+  .gear:hover{background:var(--accent);color:#fff;transform:rotate(40deg)}
+  .gear svg{width:21px;height:21px}
+
+  .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+  body.pre-chat .main{overflow:hidden}
+  body.pre-chat .chat-inner{padding-top:10px;padding-bottom:10px;justify-content:center}
+  .chat-inner{width:100%;max-width:820px;margin:0 auto;padding:26px 18px;display:flex;flex-direction:column;gap:18px;flex:1}
+  .hero{margin:auto 0;text-align:center;display:flex;flex-direction:column;align-items:center;width:100%}
+  .big-mascot{width:clamp(120px,28vh,230px);height:clamp(120px,28vh,230px);max-width:60vw;object-fit:contain;margin-bottom:8px;background:#eef6fb;border-radius:26px;padding:6px;animation:botfloat 4s ease-in-out infinite}
+  @keyframes botfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .hero h2{font-family:'Baloo 2',cursive;font-size:clamp(1.4rem,4vh,1.85rem);color:var(--accent-deep);margin-bottom:6px}
+  body.rtl .hero h2{font-family:'Tajawal',sans-serif}
+  .hero p{color:var(--muted);max-width:440px;margin:0 auto;font-size:clamp(.85rem,2.2vh,1rem)}
+
+  .msg{display:flex;gap:10px;align-items:flex-end;animation:pop .3s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .msg .avatar{width:38px;height:38px;flex:none;object-fit:cover;border-radius:10px;background:#eef6fb}
+  .bubble{padding:12px 16px;border-radius:18px;max-width:78%;line-height:1.55;font-size:1rem;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 2px 10px rgba(40,130,180,.06)}
+  .msg.bot .bubble{background:var(--bot-bubble);border:1px solid var(--line);border-bottom-left-radius:6px;color:var(--ink)}
+  body.rtl .msg.bot .bubble{border-bottom-left-radius:18px;border-bottom-right-radius:6px}
+  .msg.user{flex-direction:row-reverse}
+  .msg.user .bubble{background:var(--user-bubble);color:#fff;border-bottom-right-radius:6px}
+  body.rtl .msg.user .bubble{border-bottom-right-radius:18px;border-bottom-left-radius:6px}
+  .typing{display:flex;gap:5px;padding:14px 18px}
+  .typing span{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:blink 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+
+  .composer{padding:10px 18px 14px;background:linear-gradient(transparent,var(--bg) 38%)}
+  .composer-wrap{width:100%;max-width:760px;margin:0 auto}
+  .composer-inner{display:flex;gap:10px;align-items:flex-end;background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:9px 9px 9px 20px;box-shadow:var(--shadow)}
+  body.rtl .composer-inner{padding:9px 20px 9px 9px}
+  textarea{flex:1;border:0;background:transparent;font:inherit;font-size:1.02rem;resize:none;max-height:140px;color:var(--ink);padding:9px 0;line-height:1.45}
+  textarea:focus{outline:none}
+  .send{width:48px;height:48px;flex:none;border:0;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;display:grid;place-items:center;transition:.2s}
+  .send:hover{transform:scale(1.08)}.send:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .send svg{width:23px;height:23px}
+  body.rtl .send svg{transform:scaleX(-1)}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:13px}
+  .chip{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:9px 14px;font:inherit;font-weight:700;font-size:.85rem;color:var(--ink);cursor:pointer;transition:.2s;display:flex;align-items:center;gap:7px}
+  .chip:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .chip .ico{font-size:1.05rem}
+  .chips.hidden{display:none}
+  .footnote{text-align:center;font-size:.72rem;color:var(--muted);margin-top:10px}
+  .footnote .by{color:var(--accent-deep);font-weight:800}
+
+  .overlay{position:fixed;inset:0;background:rgba(15,40,55,.45);opacity:0;pointer-events:none;transition:.3s;z-index:20}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .panel{position:fixed;top:0;inset-inline-end:0;height:100%;width:360px;max-width:88vw;background:var(--panel);box-shadow:-12px 0 40px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:21;display:flex;flex-direction:column}
+  body.rtl .panel{transform:translateX(-100%)}
+  .panel.open{transform:translateX(0)}
+  .panel-head{display:flex;align-items:center;gap:10px;padding:20px 22px;border-bottom:1px solid var(--line)}
+  .panel-head h3{font-family:'Baloo 2',cursive;font-size:1.3rem;color:var(--accent-deep)}
+  body.rtl .panel-head h3{font-family:'Tajawal',sans-serif;font-weight:700}
+  .panel-head .close{margin-inline-start:auto;width:36px;height:36px;border:0;border-radius:10px;background:var(--bg2);color:var(--ink);font-size:1.3rem;cursor:pointer;transition:.2s}
+  .panel-head .close:hover{background:var(--accent);color:#fff}
+  .panel-body{padding:22px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:24px}
+  .field label{display:block;font-weight:800;font-size:.95rem;margin-bottom:6px}
+  .field .hint{font-size:.78rem;color:var(--muted);margin-bottom:10px;line-height:1.4}
+  .field input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:.95rem;background:var(--card2);color:var(--ink);transition:.2s}
+  .field input[type=text]:focus{outline:none;border-color:var(--accent)}
+  .seg{display:flex;gap:8px}
+  .seg button{flex:1;border:1.5px solid var(--line);background:var(--card2);color:var(--muted);font:inherit;font-weight:700;font-size:.85rem;padding:11px 6px;border-radius:13px;cursor:pointer;transition:.2s}
+  .seg button.active{border-color:var(--accent);background:var(--accent);color:#fff}
+  .save-note{font-size:.78rem;color:var(--accent-deep);font-weight:700;text-align:center;opacity:0;transition:.3s}
+  .save-note.show{opacity:1}
+  .panel-credit{margin-top:auto;padding-top:18px;border-top:1px solid var(--line);text-align:center;font-size:.8rem;color:var(--muted)}
+  .panel-credit b{color:var(--accent-deep)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-zone">
+    <img class="mascot-sm" id="headMascot" src="labib-avatar.png" alt="Labib">
+    <div class="brand">
+      <h1 id="brandName">Labib</h1>
+      <p id="brandTag">Your friendly study buddy</p>
+    </div>
+  </div>
+  <div class="lang-zone">
+    <div class="lang-switch">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="ar">ع</button>
+      <button data-lang="fr">FR</button>
+    </div>
+  </div>
+  <div class="gear-zone">
+    <button class="gear" id="gearBtn" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="main" id="main">
+  <div class="chat-inner" id="chatInner">
+    <div class="hero" id="hero">
+      <img class="big-mascot" id="bigMascot" src="labib-main.png" alt="Labib">
+      <h2 id="wTitle">Hi! I'm Labib 👋</h2>
+      <p id="wText">I help students of all grades search, understand, and revise. Ask me anything — in English, العربية, or Français!</p>
+    </div>
+  </div>
+</div>
+
+<div class="composer">
+  <div class="composer-wrap">
+    <div class="composer-inner">
+      <textarea id="input" rows="1" placeholder="Ask Labib anything..."></textarea>
+      <button class="send" id="send" aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 12L21 4L13 21L11 13L3 12Z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <p class="footnote" id="foot">Labib can make mistakes — always double-check important facts. · Made by <span class="by">Ziad Makhloufi</span></p>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<aside class="panel" id="panel">
+  <div class="panel-head">
+    <h3 id="setTitle">Settings</h3>
+    <button class="close" id="closeBtn">×</button>
+  </div>
+  <div class="panel-body">
+    <div class="field">
+      <label id="lblGrade">My grade / level</label>
+      <p class="hint" id="hintGrade">Optional. Tell Labib your level so answers fit you. E.g. "Grade 9" or "Primary 4".</p>
+      <input type="text" id="gradeInput" placeholder="e.g. Grade 9">
+    </div>
+    <div class="field">
+      <label id="lblStyle">Answer style</label>
+      <p class="hint" id="hintStyle">How detailed should Labib's answers be?</p>
+      <div class="seg" id="styleSeg">
+        <button data-style="simple" id="stSimple">Simple</button>
+        <button data-style="balanced" class="active" id="stBalanced">Balanced</button>
+        <button data-style="detailed" id="stDetailed">Detailed</button>
+      </div>
+    </div>
+    <p class="save-note" id="saveNote">Saved ✓</p>
+    <div class="panel-credit">Made with care by <b>Ziad Makhloufi</b></div>
+  </div>
+</aside>
+
+<script>
+
+/* =====================================================================
+   LABIB CONFIG  —  put your free Gemini key below.
+   Get one (no credit card) at: https://aistudio.google.com/apikey
+   ⚠ IMPORTANT: this key is visible in the page source. That is OK for a
+   homework demo. DELETE / regenerate the key right after your class so
+   nobody can reuse it later.
+   ===================================================================== */
+const API_KEY = "AQ.Ab8RN6IvYU3XVPcxpTzoRwMay2F0NHYodECI7xRFQQ6P_UN1hg";
+const MODEL   = "gemini-2.5-flash-lite";
+const SYSTEM_PROMPT = `You are "Labib" (لبيب), a friendly, patient study assistant for students from primary school to secondary school.
+
+YOUR JOB:
+- Help students search for and understand information while studying.
+- Explain concepts clearly, adjusting depth to the student's level.
+- When asked, quiz the student with short questions and give encouraging feedback.
+- Summarize topics, break down hard ideas, and suggest how to find more.
+
+RULES:
+- ALWAYS reply in the SAME language the student writes in (Arabic, English, or French). Detect it from their message.
+- Be warm, encouraging, and age-appropriate. Never condescending.
+- Keep answers focused and not overwhelming. Use simple examples.
+- Guide the student to think; don't just hand over homework answers.
+- If unsure or a topic needs current information, say so honestly.`;
+
+const avatarData = 'labib-avatar.png';
+
+const T = {
+  en:{tag:"Your friendly study buddy",title:"Hi! I'm Labib 👋",
+      text:"I help students of all grades search, understand, and revise. Ask me anything — in English, العربية, or Français!",
+      ph:"Ask Labib anything...",foot:'Labib can make mistakes — always double-check important facts. · Made by <span class="by">Ziad Makhloufi</span>',
+      chips:[["🔎","Help me research a topic"],["📖","Explain this simply"],["📝","Quiz me on a subject"],["✨","Summarize my notes"]],
+      settings:"Settings",grade:"My grade / level",hintGrade:'Optional. Tell Labib your level so answers fit you. E.g. "Grade 9" or "Primary 4".',
+      gradePh:"e.g. Grade 9",style:"Answer style",hintStyle:"How detailed should Labib's answers be?",
+      simple:"Simple",balanced:"Balanced",detailed:"Detailed",saved:"Saved ✓"},
+  ar:{tag:"رفيقك اللطيف في الدراسة",title:"مرحباً! أنا لبيب 👋",
+      text:"أساعد الطلاب في جميع المراحل على البحث والفهم والمراجعة. اسألني أي شيء — بالعربية أو الإنجليزية أو الفرنسية!",
+      ph:"اسأل لبيب أي شيء...",foot:'قد يخطئ لبيب — تحقّق دائماً من المعلومات المهمة. · من إنشاء <span class="by">زياد المخلوفي</span>',
+      chips:[["🔎","ساعدني في البحث عن موضوع"],["📖","اشرح لي ببساطة"],["📝","اختبرني في مادة"],["✨","لخّص لي ملاحظاتي"]],
+      settings:"الإعدادات",grade:"صفّي / مستواي",hintGrade:'اختياري. أخبر لبيب بمستواك لتناسبك الإجابات. مثل: "الصف التاسع" أو "الابتدائي الرابع".',
+      gradePh:"مثل: الصف التاسع",style:"نمط الإجابة",hintStyle:"ما مدى تفصيل إجابات لبيب؟",
+      simple:"بسيط",balanced:"متوازن",detailed:"مفصّل",saved:"تم الحفظ ✓"},
+  fr:{tag:"Ton copain d'étude sympa",title:"Salut ! Je suis Labib 👋",
+      text:"J'aide les élèves de tous niveaux à rechercher, comprendre et réviser. Demande-moi ce que tu veux — en français, en anglais ou en العربية !",
+      ph:"Demande à Labib...",foot:'Labib peut se tromper — vérifie toujours les infos importantes. · Créé par <span class="by">Ziad Makhloufi</span>',
+      chips:[["🔎","Aide-moi à rechercher un sujet"],["📖","Explique-moi simplement"],["📝","Fais-moi un quiz"],["✨","Résume mes notes"]],
+      settings:"Réglages",grade:"Ma classe / niveau",hintGrade:'Optionnel. Indique ton niveau pour des réponses adaptées. Ex. "3e" ou "CM1".',
+      gradePh:"ex. 3e",style:"Style de réponse",hintStyle:"Niveau de détail des réponses de Labib ?",
+      simple:"Simple",balanced:"Équilibré",detailed:"Détaillé",saved:"Enregistré ✓"}
+};
+
+let lang='en', history=[];
+const $ = id=>document.getElementById(id);
+const prefs = {
+  grade: localStorage.getItem('labib_grade') || '',
+  style: localStorage.getItem('labib_style') || 'balanced',
+  lang:  localStorage.getItem('labib_lang') || 'en'
+};
+
+function applyLang(l){
+  lang=l; const t=T[l];
+  document.body.classList.toggle('rtl', l==='ar');
+  document.documentElement.lang=l;
+  $('brandTag').textContent=t.tag; $('wTitle').textContent=t.title; $('wText').textContent=t.text;
+  $('input').placeholder=t.ph; $('foot').innerHTML=t.foot;
+  $('setTitle').textContent=t.settings; $('lblGrade').textContent=t.grade; $('hintGrade').textContent=t.hintGrade;
+  $('gradeInput').placeholder=t.gradePh; $('lblStyle').textContent=t.style; $('hintStyle').textContent=t.hintStyle;
+  $('stSimple').textContent=t.simple; $('stBalanced').textContent=t.balanced; $('stDetailed').textContent=t.detailed;
+  $('saveNote').textContent=t.saved;
+  document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
+  localStorage.setItem('labib_lang',l);
+  renderChips();
+}
+function renderChips(){
+  const box=$('chips'); box.innerHTML='';
+  T[lang].chips.forEach(([ico,txt])=>{
+    const c=document.createElement('button'); c.className='chip';
+    c.innerHTML=`<span class="ico">${ico}</span>${txt}`;
+    c.onclick=()=>{ $('input').value=txt; sendMessage(); };
+    box.appendChild(c);
+  });
+}
+document.querySelectorAll('.lang-switch button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
+
+function openPanel(){ $('overlay').classList.add('open'); $('panel').classList.add('open'); }
+function closePanel(){ $('overlay').classList.remove('open'); $('panel').classList.remove('open'); }
+$('gearBtn').onclick=openPanel; $('closeBtn').onclick=closePanel; $('overlay').onclick=closePanel;
+function flashSaved(){ const n=$('saveNote'); n.classList.add('show'); clearTimeout(n._t); n._t=setTimeout(()=>n.classList.remove('show'),1200); }
+$('gradeInput').value = prefs.grade;
+$('gradeInput').addEventListener('input', e=>{ prefs.grade=e.target.value; localStorage.setItem('labib_grade',prefs.grade); flashSaved(); });
+function setStyle(s){ prefs.style=s; localStorage.setItem('labib_style',s); document.querySelectorAll('#styleSeg button').forEach(b=>b.classList.toggle('active',b.dataset.style===s)); flashSaved(); }
+document.querySelectorAll('#styleSeg button').forEach(b=>b.onclick=()=>setStyle(b.dataset.style));
+
+function startChatLayout(){ document.body.classList.remove('pre-chat'); const hero=$('hero'); if(hero) hero.remove(); $('chips').classList.add('hidden'); $('main').style.justifyContent='flex-start'; }
+function addBubble(role,text){
+  startChatLayout();
+  const msg=document.createElement('div'); msg.className='msg '+(role==='user'?'user':'bot');
+  msg.innerHTML = role==='user' ? `<div class="bubble"></div>` : `<img class="avatar" src="${avatarData}" alt="Labib"><div class="bubble"></div>`;
+  msg.querySelector('.bubble').textContent=text;
+  $('chatInner').appendChild(msg); $('main').scrollTop=$('main').scrollHeight;
+}
+function addTyping(){
+  const msg=document.createElement('div'); msg.className='msg bot'; msg.id='typingMsg';
+  msg.innerHTML=`<img class="avatar" src="${avatarData}" alt="Labib"><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  $('chatInner').appendChild(msg); $('main').scrollTop=$('main').scrollHeight;
+}
+function removeTyping(){ const t=$('typingMsg'); if(t)t.remove(); }
+
+async function sendMessage(){
+  const input=$('input'); const text=input.value.trim(); if(!text)return;
+  input.value=''; input.style.height='auto'; $('send').disabled=true;
+  addBubble('user',text);
+  history.push({role:'user',parts:[{text}]});
+  addTyping();
+  try{
+    // Build Labib's instructions + optional grade/style preferences
+    let sys = SYSTEM_PROMPT;
+    if(prefs.grade && prefs.grade.trim()){
+      sys += "\n\nSTUDENT LEVEL: The student describes their level as: \"" + prefs.grade.trim().slice(0,120) +
+             "\". Tailor ALL explanations, vocabulary, examples and the depth of results to exactly this level.";
+    }
+    if(prefs.style==='simple') sys += "\n\nRESPONSE STYLE: Keep answers short and very simple. Short sentences, one idea at a time, minimal jargon.";
+    else if(prefs.style==='detailed') sys += "\n\nRESPONSE STYLE: Give thorough, detailed explanations with examples and step-by-step reasoning.";
+    else sys += "\n\nRESPONSE STYLE: Balanced — clear and complete but not overwhelming.";
+
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":generateContent?key=" + API_KEY,
+      { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          system_instruction:{ parts:[{ text: sys }] },
+          contents: history,
+          generationConfig:{ temperature:0.7, maxOutputTokens:1024 }
+        })
+      });
+    const data = await res.json();
+    removeTyping();
+    if(!res.ok){
+      let msg = (data.error && data.error.message) ? data.error.message : 'AI service error.';
+      if(res.status===429) msg = 'Labib is a bit busy right now (daily free limit reached). Please try again later.';
+      addBubble('bot','⚠️ '+msg);
+    } else {
+      const reply = (((data.candidates||[])[0]||{}).content||{}).parts ? data.candidates[0].content.parts[0].text : '';
+      if(!reply){ addBubble('bot','⚠️ Labib could not produce an answer. Try rephrasing.'); }
+      else { addBubble('bot',reply); history.push({role:'model',parts:[{text:reply}]}); }
+    }
+  }catch(e){ removeTyping(); addBubble('bot','⚠️ Connection problem. Please try again.'); }
+  finally{ $('send').disabled=false; input.focus(); }
+}
+
+const input=$('input');
+input.addEventListener('input',()=>{ input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,140)+'px'; });
+input.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); } });
+$('send').onclick=sendMessage;
+
+document.body.classList.add('pre-chat');
+setStyle(prefs.style); applyLang(prefs.lang);
+</script>
+</body>
+</html>
